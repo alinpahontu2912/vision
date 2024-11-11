@@ -1,0 +1,31 @@
+{
+    "dependencies": [
+        {
+            "name": "libpng",
+            "default-features": true
+        },
+        {
+            "name": "libjpeg-turbo",
+            "default-features": true
+        },
+        {
+            "name": "libwebp",
+            "default-features": true
+        }
+    ],
+    "builtin-baseline": "3426db05b996481ca31e95fff3734cf23e0f51bc", 
+    "overrides": [
+      { 
+          "name": "libpng", 
+          "version": "1.6.43"
+      },
+      { 
+          "name": "libwebp", 
+          "version": "1.3.2"
+      },
+      { 
+          "name": "libjpeg-turbo", 
+          "version": "2.0.6"
+      }
+    ]
+  }
