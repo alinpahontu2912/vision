@@ -224,11 +224,14 @@ def find_libpng():
         if pngfix is None:
             warnings.warn("pngfix not found")
             return False, None, None, None
-        pngfix_dir = Path(pngfix).absolute().parent.parent
-
+        pngfix_dir = Path(pngfix).absolute().parent.parent.parent
         library_dir = str(pngfix_dir / "lib")
         include_dir = str(pngfix_dir / "include/libpng16")
-        library = "libpng"
+
+        print(f"{library_dir = }")
+        print(f"{include_dir = }")
+
+        library = "libpng16"
 
     return True, include_dir, library_dir, library
 
@@ -273,9 +276,14 @@ def find_library(header):
 
 def make_image_extension():
     print("Building image extension")
-
-    include_dirs = TORCHVISION_INCLUDE.copy()
-    library_dirs = TORCHVISION_LIBRARY.copy()
+    print("Test")
+    include_dirs = [dir for dir in TORCHVISION_INCLUDE.copy() if dir]
+    print(f"{include_dirs = }")
+    library_dirs = [dir for dir in TORCHVISION_LIBRARY.copy() if dir]
+    print("TEST2")
+    print(f"{library_dirs = }")
+    
+    print("TEST3")
 
     libraries = []
     define_macros, extra_compile_args = get_macros_and_flags()
