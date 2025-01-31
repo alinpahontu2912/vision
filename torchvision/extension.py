@@ -20,12 +20,25 @@ try:
     # conda environment/bin path is configured Please take a look:
     # https://stackoverflow.com/questions/59330863/cant-import-dll-module-in-python
     # Please note: if some path can't be added using add_dll_directory we simply ignore this path
-    if os.name == "nt" and sys.version_info < (3, 9):
+
+    #hardcoded path to the dlls
+    torchvision_library = os.environ.get("TORCHVISION_LIBRARY", "")
+    if torchvision_library:
+    # Split the paths in case there are multiple directories (separated by ;)
+        library_dirs = torchvision_library.split(os.pathsep)
+
+        # Append each directory to PATH if it exists
+        for lib_dir in library_dirs:
+            if os.path.exists(lib_dir):
+                os.environ["PATH"] = lib_dir + os.pathsep + os.environ.get("PATH", "")
+
+    if os.name == "nt" and (3, 8) <= sys.version_info:
         env_path = os.environ["PATH"]
         path_arr = env_path.split(";")
         for path in path_arr:
             if os.path.exists(path):
                 try:
+                    print(path)
                     os.add_dll_directory(path)  # type: ignore[attr-defined]
                 except Exception:
                     pass

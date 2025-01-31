@@ -220,11 +220,13 @@ def find_libpng():
         if pngfix is None:
             warnings.warn("pngfix not found")
             return False, None, None, None
-        pngfix_dir = Path(pngfix).absolute().parent.parent
+        # to work for vcpkg installed libpng
+        pngfix_dir = Path(pngfix).absolute().parent.parent.parent
 
         library_dir = str(pngfix_dir / "lib")
         include_dir = str(pngfix_dir / "include/libpng16")
-        library = "libpng"
+        # library called libpng16 on vcpkg
+        library = "libpng16"
 
     return True, include_dir, library_dir, library
 
