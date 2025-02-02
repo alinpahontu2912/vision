@@ -1,8 +1,8 @@
 import os
 import sys
-
+import shutil
 import torch
-
+from pathlib import Path
 from ._internally_replaced_utils import _get_extension_path
 
 
@@ -22,15 +22,13 @@ try:
     # Please note: if some path can't be added using add_dll_directory we simply ignore this path
 
     #hardcoded path to the dlls
-    torchvision_library = os.environ.get("TORCHVISION_LIBRARY", "")
-    if torchvision_library:
-    # Split the paths in case there are multiple directories (separated by ;)
-        library_dirs = torchvision_library.split(os.pathsep)
+    pngfix = shutil.which("pngfix")
+    pngfix_dir = Path(pngfix).absolute().parent.parent.parent
+    bin_dir = str(pngfix_dir / "bin")
 
-        # Append each directory to PATH if it exists
-        for lib_dir in library_dirs:
-            if os.path.exists(lib_dir):
-                os.environ["PATH"] = lib_dir + os.pathsep + os.environ.get("PATH", "")
+    # Append each directory to PATH if it exists
+    if os.path.exists(bin_dir):
+        os.environ["PATH"] = bin_dir + os.pathsep + os.environ.get("PATH", "")
 
     if os.name == "nt" and (3, 8) <= sys.version_info:
         env_path = os.environ["PATH"]
@@ -38,7 +36,16 @@ try:
         for path in path_arr:
             if os.path.exists(path):
                 try:
-                    print(path)
+                    os.add_dll_directory(path)  # type: ignore[attr-defined]
+                except Exception:
+                    pass
+
+    if os.name == "nt" and (3, 8) <= sys.version_info:
+        env_path = os.environ["PATH"]
+        path_arr = env_path.split(";")
+        for path in path_arr:
+            if os.path.exists(path):
+                try:
                     os.add_dll_directory(path)  # type: ignore[attr-defined]
                 except Exception:
                     pass
